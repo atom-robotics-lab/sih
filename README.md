@@ -23,7 +23,25 @@
 
 ## About our Project
 
-sih project
+### SIH Project
+
+  This is an IoT enables risk monitoring system in cold supply chain.
+  In this project we have used multiple Tech. stacks like:
+  - Django
+  - Grafana
+  - Fusion 360
+  - Prometheus
+  - C++
+  - Python
+  - Arduino IDE
+
+  Furthermore we have used multiple sensors to detect the conditions of the cold storage like:
+  - Temperature(DHT11)
+  - Humidity(DHT11)
+  - Harmful Gases(MQ135)
+  - Luminosity(LDR)
+  - GPS Module etc. 
+  We even used GSM  Module to use mobile network to transmit the data extracted by the sensors and upload it to grafana.  
 
 ## Requirements
 
