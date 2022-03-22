@@ -106,6 +106,21 @@ https://dl.espressif.com/dl/package_esp32_index.json, http://arduino.esp8266.com
 
 - Open the esp32 file from your directory (or ctrl+O)
 
+- Change ssid and password as per your Wifi.
+
+- Changing the server name in the esp32.ino file:
+  - - if on the same network:
+```bash
+ifconfig
+```
+    type in https then inet ip followed by ':8000', example: "https:/192.168.0.1:8000"
+
+  - - if different network you can do port forwarding with ngrok.
+      type ngrok http -region in 8000 
+    type in http forwarding link, example: "tcp://0.tcp.in.ngrok.io:18832"
+
+    (note this ip will change everytime you run ngrok command so youll have to change the ino code.)
+
 - Compile and upload the file on the esp32 module
 
 ### Setting up grafana
