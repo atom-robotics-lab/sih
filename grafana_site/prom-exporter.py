@@ -42,6 +42,7 @@ class CustomCollector(object):     ## Class for CustomCollector which helps us t
         value.add_metric(['humidity'],humidity)
         value.add_metric(['gas_analog'],gas_analog)
         value.add_metric(['ldr'],ldr)
+        value.add_metric(['online'], 1)
 
         yield value
 
