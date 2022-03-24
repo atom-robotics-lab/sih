@@ -140,7 +140,7 @@ GET <your_metric_name>
 
 - Now select Metric Browser>Storage_sensor_total then select your metric/job.
 
-- (escape character)~Voila you are done~
+- \~Voila you are done~
 
 ## Samples
 
