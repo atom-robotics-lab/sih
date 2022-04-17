@@ -19,6 +19,7 @@
 - [About our Project](#about-our-project)
 - [Requirements](#requirements)
 - [Installation](#installation)
+- [Setting up the Project](#setting-up-the-project)
 - [Usage](#usage)
 
 ## About our Project
@@ -54,6 +55,7 @@
   - Harmful Gases(MQ135)
   - Luminosity(LDR)
   - GPS Module 
+  
   We even used GSM  Module to use mobile network to transmit the data extracted by the sensors and upload it to grafana.  
 
 ## Requirements
@@ -63,6 +65,7 @@
 - Redis
 - Fast-API
 - Arduino IDE
+- Uvicorn
 
 ## Installation
 
@@ -147,13 +150,29 @@ sudo systemctl enable prometheus.service
 ```
 (last line configures it to run at boot).
 
-Prometheus is now Installed, navigate to the URL http://192.168.20.131:9090/targets from your favorite web browser and all the targets that you’ve configured should be displayed. You should be able to see that the prometheus target is in the UP state.
+Prometheus is now Installed, navigate to the URL http://localhost:9090/targets from your favorite web browser and all the targets that you’ve configured should be displayed. You should be able to see that the prometheus target is in the UP state.
+
+### Adding custom-exporter port to prometheus
+
+```bash
+sudo /opt/prometheus/prometheus.yml
+```
+
+Create a new target by pasting this under '__static_configs:__'
+
+```text
+targets: [localhost:8085]
+```
+
+note(restart the prometheus service after adding the above lines to the yml file)
 
 ### Installing Arduino IDE
-You can easily install Arduio IDE through the Ubuntu software store or download the tar file through https://www.arduino.cc/en/software.
+
+You can easily install Arduio IDE through the __Ubuntu software store__ or download the tar file through https://www.arduino.cc/en/software.
+
 ```bash
-tar -xvf <package_name i.e arduino-1.6.10-linux64.tar.xz>
-cd <directory_name i.e arduino-1.6.10>
+tar -xvf <package_name> #i.e arduino-1.6.10-linux64.tar.xz>
+cd <directory_name> #i.e arduino-1.6.10>
 ./install.sh
 ls -l /dev/ttyACM*
 sudo usermod -a -G dialout <username>
@@ -161,27 +180,19 @@ sudo usermod -a -G dialout <username>
 
 ## Usage
 
-- ### Adding custom-exporter port to prometheus
-
-```bash
-sudo /opt/prometheus/prometheus.yml
-```
-
-Add the following text inside the static_configs of job "prometheus"
-
-```text
-/- targets: [localhost:8085]
-```
-
-note(restart the prometheus service after adding the above lines to the yml file)
-
-- ### Check status of redis-server, prometheus and grafana by typing
+Check status of redis-server, prometheus and grafana by typing
 
 ```bash
 sudo systemctl status <service_name>
 ```
+At first you are required to manually set values in redis with the help of redis-cli, you can do that by
 
-### if any service is not active you can start it by typing
+```bash
+redis-cli
+set <variable_name> <value>
+```
+
+If any service is not active you can start it by typing
 
 ```bash
 sudo systemctl start <service_name>
@@ -190,25 +201,25 @@ sudo systemctl start <service_name>
 (you can exit the code by pressing q)
 (similarly start can be replaced by stop to disable the active service)
 
-### Using esp32
+### Using esp32 with Arduino IDE
 
-- Make the following circuit using the sensor, esp32, breadboard and jumper wires
+- Make the circuit given below using the sensors, esp32, breadboard and jumper wires
 
 <image src="circuit diagram">
 
-- Install arduino ide and add esp32 to the ide by adding the given url to File>Preferences>setings>Additional Boards Manager Urls
+- Install arduino ide and add esp32 to the ide by adding the given url to __File__ > __Preferences__ > __setings__ > __Additional Boards Manager Urls__
 
 ```url
 https://dl.espressif.com/dl/package_esp32_index.json, http://arduino.esp8266.com/stable/package_esp8266com_index.json
 ```
 
-- Open the Boards Manager. Go to Tools > Board > Boards Manager...
+- Open the Boards Manager. Go to __Tools__ > __Board__ > __Boards Manager__...
 
 - Search for esp32 and press install
 
-- Now choose esp32 dev module in Tools > Board > esp32 Arduino
+- Now choose esp32 dev module in __Tools__ > __Board__ > __esp32 Arduino__
 
-- Search and install DHT sensor library and Wifi library from Tools > Manage Libraries
+- Search and install __DHT sensor library__ and Wifi library from __Tools__ > __Manage Libraries__
 
 - Open the esp32 file from your directory (or ctrl+O)
 
@@ -227,11 +238,11 @@ ifconfig
 
     (note this ip will change everytime you run ngrok command so youll have to change the ino code.)
 
-- Compile and upload the file on the esp32 module
+- __Compile__ and __upload__ the file on the esp32 module
 
-### Setting up grafana
+### Staring fast-api
 
-- Open your terminal and go to the cloned directory and run
+- Open your terminal and go to the cloned directory, inside the grafana_site directory and run
 
 ```bash
 uvicorn main:app --host 0.0.0.0 --reload
@@ -239,27 +250,39 @@ uvicorn main:app --host 0.0.0.0 --reload
 
 this will start the rest api server
 
-- Also start the prom-exporter file
+### Starting the prometheus node-exporter
 
 ```bash
 python3 prom-exporter.py
 ```
 
-- Open your web browser and head over to localhost:8085. You should be able to see some metrics being published over there by your prometheus exporter.
+- Open your web browser and head over to http://localhost:8085. You should be able to see some metrics being published over there by your prometheus exporter.
 
-you can also check the wether the values are being published or not by typing redis-cli in the terminal. Then type
+when you run the files at the first time you need to manually set value in redis, you can do that by
 
 ```bash
+redis-cli
+SET <your_metric_name> <value>
+```
+
+The metrics that you need to set here are: __temperature__, __humidity__, __gas_analog__, __ldr__ (you can find these variables being defined in __main.py__ and used in __prom-exporter.py__)
+
+You can also check the whether the values are being published or not by
+
+```bash
+redis-cli
 GET <your_metric_name>
 ```
 
 (you can exit it by pressing using exit command)
 
-- Now you can log on to your grafana server, type in localhost:3000 in your browld ser. Both username and password would be 'admin'.
+### Using Grafana
 
-- Go to the explore panel (Compas icon on the left)
+- Now you can log on to your grafana server, type in http://localhost:3000 in your browser. Both username and password would be 'admin'.
 
-- Now select Metric Browser>Storage_sensor_total then select your metric/job.
+- Go to the __explore panel__ (Compas icon on the left)
+
+- Now select __Metric Browser__>__Storage_sensor_total__ then select __your metric/job__.
 
 - ~Voila you are done~
 
