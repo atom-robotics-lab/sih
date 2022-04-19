@@ -284,7 +284,7 @@ GET <your_metric_name>
 
 - Now select __Metric Browser__>__Storage_sensor_total__ then select __your metric/job__.
 
-- ~Voila you are done~
+- \~Voila you are done~
 
 ## Samples
 
