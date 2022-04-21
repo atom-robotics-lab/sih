@@ -205,7 +205,7 @@ sudo systemctl start <service_name>
 
 - Make the circuit given below using the sensors, esp32, breadboard and jumper wires
 
-<image src="circuit diagram">
+<center><image src="images/schematic.jpg" height="300" width="500"></center>
 
 - Install arduino ide and add esp32 to the ide by adding the given url to __File__ > __Preferences__ > __setings__ > __Additional Boards Manager Urls__
 
@@ -288,5 +288,9 @@ GET <your_metric_name>
 
 ## Samples
 
-<some images>
+<center>
+<img src="images/image1.jpg" width="300" height="300">
+<img src="images/image2.jpg" width="300" height="300">
+</center>
 
+<center><img src="images/image3.png" width="500" height="300"></center>
